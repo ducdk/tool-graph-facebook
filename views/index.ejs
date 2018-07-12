@@ -8,14 +8,102 @@
     <title></title>
     <meta name="description" content="">
     <meta name="author" content="Đk">
+    <link rel="stylesheet" href="/src/boardz.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/wingcss/0.1.8/wing.min.css">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js"></script>
+    <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+    <script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
     <link rel="shortcut icon" href="/cat-favicon-mint-copy.png" title="Favicon" />
 </head>
 
 <body>
-    <div class="">
-        <pre>Hello</pre>
+    <div class="seventyfive-percent  centered-block">
+        <!-- Sample code block -->
+        <div>
+
+            <!-- Example header and explanation -->
+            <div class="text-center">
+                <h2><strong>Tool Facebook</strong></h2>
+            </div>
+
+            <hr class="seperator fifty-percent">
+
+            <div id="data">
+            </div>
+        </div>
+        <hr class="seperator">
+
+        <div class="footer">
+            <p>Developed with ❤ .</p>
+        </div>
+
     </div>
+
+    <script>
+        $(document).on('click', 'pre > .apt',
+            function() {
+                console.log('clcil');
+                var html = $(this).parent();
+                html.find('pre').remove();
+                var id = $(this).attr('data');
+                fetch('/post/' + id, {
+                        method: 'POST'
+                    })
+                    .then(
+                        function(response) {
+                            if (response.status !== 200) {
+                                alert('Looks like there was a problem. Status Code: ' + response.status);
+                                return;
+                            }
+                            response.json().then(function(data) {
+
+                                for (var i = 0; i < data.length; i++) {
+                                    var t = data[i].message ? data[i].message : data[i].story;
+                                    var c = '<pre><p class="apt" data="' + data[i].id + '">|- ' + t + '</p><span> ' + data[i].created_time + '</span></pre>';
+                                    html.append(c);
+                                }
+                            });
+                        }
+                    )
+                    .catch(function(err) {
+                        alert('Fetch Error :-S', err);
+                    });
+            }
+        );
+
+
+        function getdata(response) {
+            var data = response;
+            var html = $('#data');
+            for (var i = 0; i < data.length; i++) {
+                var t = data[i].message ? data[i].message : data[i].story;
+                var c = '<pre><p class="apt" data="' + data[i].id + '">|- POST: ' + t + '</p><span> ' + data[i].created_time + '</span></pre>';
+                html.append(c);
+            }
+        };
+
+        fetch('/result')
+            .then(
+                function(response) {
+                    if (response.status !== 200) {
+                        alert('Looks like there was a problem. Status Code: ' + response.status);
+                        return;
+                    }
+
+                    // Examine the text in the response  
+                    response.json().then(function(data) {
+                        getdata(data);
+                    });
+                }
+            )
+            .catch(function(err) {
+                alert('Fetch Error :-S', err);
+            });
+    </script>
 </body>
 
 </html>
