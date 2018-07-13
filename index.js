@@ -53,4 +53,24 @@ app.post('/post/:id', function(req, res) {
     setTimeout((function() { res.send(arr) }), 1000);
 })
 
+app.post('/comments/:id', function(req, res) {
+    console.log(req.path);
+    let comment = "Thank you! :)";
+    const url = 'https://graph.facebook.com/v2.8/' + req.params.id + '/comments?access_token=' + access_token + '';
+    let arr = [];
+    request.post({
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        url: url,
+        body: "message=" + comment
+    }, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+            let t = JSON.parse(body);
+            for (let i = 0; i < t['data'].length; i++) {
+                arr.push(t['data'][i])
+            }
+        }
+    });
+    setTimeout((function() { res.send(arr) }), 1000);
+})
+
 app.listen(port, () => console.log('Server app listening on port:' + port));
